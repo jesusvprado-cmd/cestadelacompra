@@ -2,7 +2,12 @@ name: Compilar APK
 
 on:
   push:
+    branches: [main]
+    paths-ignore: ['**.md']
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   apk:
@@ -19,7 +24,20 @@ jobs:
         with:
           gradle-version: '8.7'
 
+      - name: Preparar la firma (desde los secretos)
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_B64 }}
+        run: |
+          if [ -z "$KEYSTORE_B64" ]; then
+            echo "::error::Falta el secreto KEYSTORE_B64 (Settings → Secrets and variables → Actions)"
+            exit 1
+          fi
+          echo "$KEYSTORE_B64" | base64 -d > app/listacompra.keystore
+
       - name: Compilar
+        env:
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+          VERSION_CODE: ${{ github.run_number }}
         run: gradle assembleRelease --no-daemon --stacktrace
 
       - name: Renombrar
@@ -29,3 +47,18 @@ jobs:
         with:
           name: ListaCompra-apk
           path: ListaCompra.apk
+
+      - name: Publicar la versión (la app la descarga de aquí)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MENSAJE: ${{ github.event.head_commit.message }}
+        run: |
+          NOTAS="${MENSAJE:-Versión nueva}"
+          gh release create "v${{ github.run_number }}" ListaCompra.apk \
+            --title "1.${{ github.run_number }}" \
+            --notes "$NOTAS" \
+            --latest
+
+      - name: Borrar la firma del disco
+        if: always()
+        run: rm -f app/listacompra.keystore
