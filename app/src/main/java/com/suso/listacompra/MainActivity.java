@@ -11,10 +11,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.speech.RecognizerIntent;
 import android.util.Base64;
 import android.webkit.JavascriptInterface;
@@ -31,6 +33,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +63,7 @@ public class MainActivity extends Activity {
     private final Object candado = new Object();
     private volatile int streamGen = 0;
     private volatile HttpURLConnection streamConn;
+    private volatile boolean instalarAlVolver = false;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -88,12 +92,28 @@ public class MainActivity extends Activity {
         web.addJavascriptInterface(new Puente(), "Android");
         web.loadUrl("file:///android_asset/index.html");
         setContentView(web);
+
+        Actualizaciones.programar(this);
+        pedirPermisoNotificaciones();
+    }
+
+    private void pedirPermisoNotificaciones() {
+        if (Build.VERSION.SDK_INT >= 33
+                && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != android.content.pm.PackageManager.PERMISSION_GRANTED
+                && !prefs.getBoolean("permisoNotifPedido", false)) {
+            prefs.edit().putBoolean("permisoNotifPedido", true).apply();
+            requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 21);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         js("window.alVolver&&alVolver()");
+        if (instalarAlVolver) {
+            instalarAlVolver = false;
+            lanzarInstalador();
+        }
     }
 
     @Override
@@ -359,6 +379,74 @@ public class MainActivity extends Activity {
         }
     }
 
+    /* ---------------- Actualizaciones: descargar e instalar el APK ---------------- */
+
+    private File archivoApk() {
+        File dir = new File(getCacheDir(), "actualizacion");
+        //noinspection ResultOfMethodCallIgnored
+        dir.mkdirs();
+        return new File(dir, "ListaCompra.apk");
+    }
+
+    private void descargarApk(String url) {
+        HttpURLConnection c = null;
+        File destino = archivoApk();
+        try {
+            c = (HttpURLConnection) new URL(url).openConnection();
+            c.setConnectTimeout(15000);
+            c.setReadTimeout(60000);
+            c.setInstanceFollowRedirects(true);
+            int code = c.getResponseCode();
+            if (code != 200) throw new IOException("GitHub ha contestado " + code);
+            long total = c.getContentLength(), hecho = 0;
+            int ultimoPct = -1;
+            try (InputStream is = c.getInputStream(); OutputStream os = new FileOutputStream(destino)) {
+                byte[] buf = new byte[32768];
+                int n;
+                while ((n = is.read(buf)) > 0) {
+                    os.write(buf, 0, n);
+                    hecho += n;
+                    if (total > 0) {
+                        int pct = (int) (hecho * 100 / total);
+                        if (pct != ultimoPct) { ultimoPct = pct; js("window.__descarga&&__descarga(" + pct + ")"); }
+                    }
+                }
+            }
+            js("window.__descarga&&__descarga(100)");
+            ui.post(this::lanzarInstalador);
+        } catch (Exception e) {
+            js("window.__descargaError&&__descargaError(" + q("No se pudo descargar: " + e.getMessage()) + ")");
+        } finally {
+            if (c != null) c.disconnect();
+        }
+    }
+
+    private void lanzarInstalador() {
+        File apk = archivoApk();
+        if (!apk.exists()) return;
+        if (Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+            // Android pide permiso una vez para que esta app pueda instalar actualizaciones
+            instalarAlVolver = true;
+            js("window.__permisoInstalar&&__permisoInstalar()");
+            try {
+                startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getPackageName())));
+            } catch (Exception e) {
+                instalarAlVolver = false;
+                js("window.__descargaError&&__descargaError(" + q("Abre Ajustes de Android y permite a «Lista de la compra» instalar apps.") + ")");
+            }
+            return;
+        }
+        try {
+            Uri uri = FileProvider.getUriForFile(this, getPackageName() + ".fotos", apk);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setDataAndType(uri, "application/vnd.android.package-archive");
+            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        } catch (Exception e) {
+            js("window.__descargaError&&__descargaError(" + q("No se pudo abrir el instalador: " + e.getMessage()) + ")");
+        }
+    }
+
     /* ---------------- Lo que puede llamar el JavaScript ---------------- */
 
     public class Puente {
@@ -403,6 +491,16 @@ public class MainActivity extends Activity {
                 }
             } catch (Exception ignored) { }
             return "";
+        }
+
+        @JavascriptInterface public int versionCode() { return Actualizaciones.codigoInstalado(MainActivity.this); }
+
+        @JavascriptInterface public void instalarApk(final String url) {
+            if (url == null || !url.startsWith("https://github.com/" + Actualizaciones.REPO + "/releases/download/")) {
+                js("window.__descargaError&&__descargaError(" + q("Dirección de descarga no válida") + ")");
+                return;
+            }
+            new Thread(() -> descargarApk(url)).start();
         }
 
         @JavascriptInterface public String version() {
