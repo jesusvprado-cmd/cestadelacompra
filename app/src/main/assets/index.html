@@ -30,6 +30,7 @@ header{position:sticky;top:0;z-index:5;background:var(--verde);color:#fff;box-sh
 .barra input:focus{border-color:var(--verde2)}
 .redondo{flex:none;width:3rem;height:3rem;border-radius:50%;background:var(--verde);color:#fff;font-size:1.3rem;box-shadow:0 2px 5px rgba(0,0,0,.2)}
 .redondo:active{transform:scale(.93)}
+.redondo svg{width:1.45rem;height:1.45rem;display:block;margin:auto}
 .redondo.escuchando{background:var(--rojo);animation:latido 1s infinite}
 @keyframes latido{50%{box-shadow:0 0 0 .5rem rgba(198,40,40,.25)}}
 .sugerencias{display:flex;flex-wrap:wrap;gap:.4rem;padding:0 .7rem}
@@ -116,8 +117,8 @@ pre.registro{font-size:.62rem;white-space:pre-wrap;word-break:break-all;backgrou
 </header>
 <div id="barra" class="barra">
   <input id="entrada" placeholder="Añadir producto…" enterkeyhint="done" autocomplete="off" autocapitalize="sentences">
-  <button id="bVoz" class="redondo" aria-label="Dictar">🎤</button>
-  <button id="bFoto" class="redondo" aria-label="Foto de una lista">📷</button>
+  <button id="bVoz" class="redondo" aria-label="Dictar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg></button>
+  <button id="bFoto" class="redondo" aria-label="Foto de una lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.8-2.5h6.4L17 8h3a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg></button>
 </div>
 <div id="sugerencias" class="sugerencias"></div>
 <main id="lista"></main>
