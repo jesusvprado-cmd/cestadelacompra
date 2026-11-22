@@ -9,6 +9,7 @@ App Android para tener **la misma lista de la compra en tu móvil y en el de tu 
 - **📷 Foto de una lista escrita a mano**: la lee Gemini (la IA de Google), y antes de añadir nada te deja revisar y corregir.
 - **🎤 Dictado**: «un litro de aceite, dos paquetes de macarrones y leche» → tres productos con su cantidad.
 - Si no hay cobertura en el súper, sigue funcionando y guarda los cambios hasta que vuelva la conexión.
+- **Se actualiza sola desde el móvil**: cuando hay una versión nueva, sale un aviso (también una notificación) con el botón **Actualizar**.
 
 Hay que hacer tres cosas **una sola vez**: crear la base de datos (Firebase), sacar la clave de Gemini y compilar el APK.
 
@@ -58,12 +59,23 @@ Sin la clave, la app funciona igual, pero la cámara no lee fotos y el dictado s
 ## 3. Compilar el APK (con GitHub, como Bus Arteixo y Teclado TV)
 
 1. Crea un repositorio nuevo en GitHub, por ejemplo `ListaCompra`.
-2. Sube **todo el contenido** de esta carpeta (incluida la carpeta oculta `.github`).
+2. Sube **todo el contenido** de esta carpeta (incluida la carpeta `.github`, que a veces se queda fuera por empezar por punto).
+   Antes, añade los dos secretos de la firma (ver «La firma»).
 3. Pestaña **Actions** → el trabajo *Compilar APK* se lanza solo (o pulsa *Run workflow*).
 4. Cuando termine (3-5 min), entra en el trabajo y descarga **ListaCompra-apk** (un .zip con `ListaCompra.apk`).
 
-Pasa el APK a los dos móviles e instálalo (Android pedirá permitir «instalar apps desconocidas»).
-Las versiones nuevas se instalan **encima** sin perder nada: va firmada siempre con `app/listacompra.keystore`, así que no borres ese archivo.
+Pasa el APK a los dos móviles e instálalo (Android pedirá permitir «instalar apps desconocidas»). **Solo hace falta esta vez**: a partir de aquí, la app se actualiza sola (ver «Actualizaciones»).
+
+### La firma (secretos de GitHub)
+
+Para que Android acepte cada versión nueva encima de la anterior, todas van firmadas con la misma clave. Esa clave **no está en el repositorio** (que es público): está guardada en dos secretos de GitHub, en **Settings → Secrets and variables → Actions**:
+
+| Secreto | Qué es |
+|---|---|
+| `KEYSTORE_B64` | la clave de firma, en texto (base64) |
+| `KEYSTORE_PASS` | su contraseña |
+
+Guarda una copia de los dos en un sitio seguro (por ejemplo, en Google Drive en una carpeta privada). Si se pierden, las versiones nuevas no podrán instalarse encima y habría que desinstalar y volver a instalar la app.
 
 ## 4. Ponerla en marcha
 
@@ -98,6 +110,17 @@ Desde ese momento veis la misma lista.
 
 Arriba a la derecha se ve el estado: **● al día**, **○ sin conexión** (los cambios esperan y se envían solos) o **⚠ error**.
 
+## Actualizaciones
+
+Cada vez que se cambia algo en GitHub, se compila solo y se publica como versión nueva en **Releases** (1.4, 1.5…). El mensaje del cambio sale como explicación de la versión.
+
+- Al abrir la app (y cada 12 horas en segundo plano), mira si hay versión nueva. Si la hay, sale un aviso arriba y una **notificación**.
+- Pulsa **Actualizar**: se descarga y Android pregunta «¿Quieres actualizar esta app?» → **Actualizar**. No se pierde nada.
+- La primera vez Android pide permitir que «Lista de la compra» instale apps: actívalo y vuelve atrás, y la instalación sigue sola.
+- Para mirarlo a mano: ⚙ Ajustes → **Buscar actualizaciones**.
+
+Android siempre pide confirmar la instalación: ninguna app puede actualizarse en silencio si no viene de Google Play.
+
 ## Si algo no funciona
 
 **⚙ Ajustes → Registro de pruebas → Prueba completa → Copiar todo**, y pega el texto en el chat con Claude. La clave de Gemini sale tapada con `***`.
@@ -123,8 +146,8 @@ hogares/<código de 24 letras>/
 ```
 app/src/main/assets/index.html                          toda la pantalla y la lógica (HTML + JavaScript)
 app/src/main/java/com/suso/listacompra/MainActivity.java   puente: internet, directo, cámara, voz, compartir
-app/listacompra.keystore                                  clave de firma (no borrar)
-.github/workflows/build.yml                               compila el APK en GitHub
+app/src/main/java/com/suso/listacompra/Actualizaciones.java  aviso de versiones nuevas en segundo plano
+.github/workflows/build.yml                               compila el APK, lo firma con los secretos y lo publica en Releases
 ```
 
 `index.html` se puede abrir en el navegador del ordenador para probarlo: botón «Probar sin conexión», o con la dirección real de Firebase.
