@@ -104,6 +104,11 @@ main{padding:.2rem .7rem 1rem}
 .codigo{font-family:monospace;font-size:.72rem;word-break:break-all;background:#f1f4f0;padding:.5rem;border-radius:.5rem}
 pre.registro{font-size:.62rem;white-space:pre-wrap;word-break:break-all;background:#1d2420;color:#cfe8d2;padding:.6rem;border-radius:.6rem;max-height:50vh;overflow:auto;-webkit-user-select:text;user-select:text}
 .opciones3{display:flex;gap:.4rem}.opciones3 button{flex:1;padding:.6rem;border-radius:.6rem;background:#f1f4f0}.opciones3 button.sel{background:var(--verde);color:#fff}
+.act{display:flex;align-items:center;gap:.7rem;margin:.2rem .7rem .4rem;padding:.7rem .8rem;border-radius:.9rem;background:#fff;border:2px solid var(--verde2);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.act svg{flex:none;width:1.5rem;height:1.5rem;color:var(--verde)}
+.act .t{flex:1;min-width:0;line-height:1.3}.act .t b{display:block}.act .t span{font-size:.8rem;color:var(--gris)}
+.act button{flex:none;background:var(--verde);color:#fff;border-radius:2rem;padding:.55rem .95rem;font-weight:700;font-size:.9rem}
+.act .barra-prog{height:.35rem;background:var(--linea);border-radius:1rem;margin-top:.35rem;overflow:hidden}.act .barra-prog i{display:block;height:100%;background:var(--verde2);transition:width .2s}
 .toast{position:fixed;left:50%;bottom:5.2rem;transform:translateX(-50%);z-index:30;background:#263028;color:#fff;border-radius:.8rem;padding:.7rem 1rem;font-size:.9rem;display:flex;gap:.8rem;align-items:center;max-width:92vw;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .toast.oculto{display:none}.toast.error{background:var(--rojo)}
 .toast button{color:#9be7a1;font-weight:700;text-transform:uppercase;font-size:.85rem}
@@ -121,6 +126,7 @@ pre.registro{font-size:.62rem;white-space:pre-wrap;word-break:break-all;backgrou
   <button id="bFoto" class="redondo" aria-label="Foto de una lista"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l1.8-2.5h6.4L17 8h3a1 1 0 0 1 1 1v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.4"/></svg></button>
 </div>
 <div id="sugerencias" class="sugerencias"></div>
+<div id="avisoAct"></div>
 <main id="lista"></main>
 <button id="bHab" class="flotante">⭐ Habituales</button>
 <div id="modal" class="modal oculto"><div class="hoja" id="hoja"></div></div>
@@ -358,7 +364,7 @@ function conectar(){
   }
   pintarSync();
 }
-window.alVolver=()=>{if(configurado())conectar();};
+window.alVolver=()=>{if(configurado())conectar();comprobarActualizacion(false);};
 function pintarSync(){
   const el=$('#sync');
   let t,c='';
@@ -827,6 +833,48 @@ async function procesarDictado(t){
   }
 }
 
+/* ============ Actualizaciones de la app ============ */
+const REPO='jesusvprado-cmd/cestadelacompra';
+let ACT=null,ultimaComprob=0;
+const codigoApp=()=>{try{return AND&&AND.versionCode?AND.versionCode():0;}catch(e){return 0;}};
+async function comprobarActualizacion(manual){
+  if(!AND&&!manual)return;
+  if(!manual&&Date.now()-ultimaComprob<3*3600*1000)return;
+  ultimaComprob=Date.now();
+  const r=await http('GET',`https://api.github.com/repos/${REPO}/releases/latest`,null,{'Accept':'application/vnd.github+json'});
+  log('Buscar actualización →',r.status);
+  if(r.status!==200){if(manual)aviso(r.status===404?'Todavía no hay versiones publicadas en GitHub.':'No se ha podido consultar GitHub ahora mismo.',r.status!==404);return;}
+  let j;try{j=JSON.parse(r.text);}catch(e){return;}
+  const codigo=parseInt(String(j.tag_name||'').replace(/\D/g,''))||0;
+  const apk=(j.assets||[]).find(a=>/\.apk$/i.test(a.name||''));
+  const mio=codigoApp();
+  log('Versión publicada',codigo,'· instalada',mio);
+  if(apk&&codigo>mio){
+    if(!ACT||ACT.codigo!==codigo)ACT={codigo,nombre:j.name||('1.'+codigo),notas:String(j.body||'').trim().split('\n')[0],url:apk.browser_download_url,estado:'',pct:0};
+    pintarAct();
+    if(manual)aviso('Hay una versión nueva: '+ACT.nombre);
+  }else{ACT=null;pintarAct();if(manual)aviso('Ya tienes la última versión'+(mio?' (1.'+mio+')':'')+'.');}
+}
+const ICONO_ACT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>';
+function pintarAct(){
+  const c=$('#avisoAct');
+  if(!ACT){c.innerHTML='';return;}
+  let t,b='';
+  if(ACT.estado==='descargando')t=`<b>Descargando ${esc(ACT.nombre)}…</b><div class="barra-prog"><i style="width:${ACT.pct}%"></i></div>`;
+  else if(ACT.estado==='instalar')t=`<b>Lista para instalar</b><span>Si Android lo pide, permite instalar y vuelve a la app.</span>`,b=`<button data-act="instalar">Instalar</button>`;
+  else t=`<b>Nueva versión ${esc(ACT.nombre)}</b>${ACT.notas?`<span>${esc(ACT.notas)}</span>`:''}`,b=`<button data-act="bajar">Actualizar</button>`;
+  c.innerHTML=`<div class="act">${ICONO_ACT}<div class="t">${t}</div>${b}</div>`;
+}
+$('#avisoAct').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||!ACT)return;
+  if(!AND){aviso('Las actualizaciones se instalan desde la app del móvil.',true);return;}
+  ACT.estado='descargando';ACT.pct=0;pintarAct();
+  AND.instalarApk(ACT.url);
+});
+window.__descarga=pct=>{if(!ACT)return;ACT.pct=pct;ACT.estado=pct>=100?'instalar':'descargando';pintarAct();};
+window.__descargaError=msg=>{if(ACT){ACT.estado='';pintarAct();}aviso(msg,true);log(msg);};
+window.__permisoInstalar=()=>aviso('Activa «Permitir de esta fuente» y vuelve atrás: la instalación seguirá sola.');
+
 /* ============ Ajustes ============ */
 function codigoEnlace(){return 'LISTA-'+b64cod(JSON.stringify({u:CFG.db,h:CFG.hogar,k:CFG.gemini||''}));}
 function textoParaCompartir(){return `Para tener la lista de la compra compartida conmigo: abre la app «Lista de la compra», pulsa «Tengo un código» (o ⚙ Ajustes → Unirme con un código) y pega este mensaje entero:\n\n${codigoEnlace()}`;}
@@ -865,6 +913,9 @@ function abrirAjustes(){
     <div class="opciones3">${[['normal','Normal'],['grande','Grande'],['muy','Muy grande']].map(([k,t])=>`<button data-letra="${k}" class="${CFG.letra===k?'sel':''}">${t}</button>`).join('')}</div>
     <h3>🧭 Orden de las secciones (como los pasillos de tu súper)</h3>
     <div id="aOrden">${ordenSecciones().map((s,i,a)=>`<div class="orden"><span>${SEC[s].e} ${esc(SEC[s].n)}</span><button data-sube="${s}" ${i?'':'disabled'}>▲</button><button data-baja="${s}" ${i<a.length-1?'':'disabled'}>▼</button></div>`).join('')}</div>
+    <h3>⬇ Actualizaciones</h3>
+    <p class="nota">Versión instalada: ${esc(AND&&AND.version?AND.version():VERSION_WEB)}. La app mira sola si hay versión nueva al abrirla y cada 12 horas (te avisa con una notificación).</p>
+    <div class="botones"><button id="aAct">Buscar actualizaciones</button></div>
     <h3>🛠 Si algo no funciona</h3>
     <div class="botones"><button id="aReg">Registro de pruebas</button></div>
     <p class="nota">Versión ${esc(AND&&AND.version?AND.version():VERSION_WEB)}</p>
@@ -896,6 +947,7 @@ function abrirAjustes(){
     r.querySelectorAll('[data-sube]').forEach(b=>b.onclick=()=>mover(b.dataset.sube,-1));
     r.querySelectorAll('[data-baja]').forEach(b=>b.onclick=()=>mover(b.dataset.baja,1));
     q('#aReg').onclick=abrirRegistro;
+    q('#aAct').onclick=()=>{cerrar();comprobarActualizacion(true);};
     q('#aX').onclick=cerrar;
   }};
   abrir(v);
@@ -1033,6 +1085,7 @@ function arrancar(){
   if(!CFG.nombre||!configurado())bienvenida();else conectar();
   setInterval(vaciarPend,15000);
   setInterval(()=>{if(!pila.length)render();},60000);
+  setTimeout(()=>comprobarActualizacion(false),1500);
 }
 arrancar();
 </script>
