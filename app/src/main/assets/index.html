@@ -38,7 +38,17 @@ header{position:sticky;top:0;z-index:5;background:var(--verde);color:#fff;box-sh
 .sug{background:#fff;border:1px solid var(--linea);border-radius:2rem;padding:.4rem .8rem;font-size:.9rem}
 main{padding:.2rem .7rem 1rem}
 .seccion{margin:.8rem 0 .35rem;font-size:.82rem;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:.4rem}
-.seccion span{font-size:1.15rem}
+.seccion .ico{width:1.25rem;height:1.25rem;color:var(--verde);opacity:.9}
+svg.ico{width:1.1em;height:1.1em;vertical-align:-.2em;flex:none}
+.fila1 h1 .ico{width:1.2em;height:1.2em;margin-right:.25rem;vertical-align:-.22em}
+.icono .ico{width:1.45rem;height:1.45rem;display:block;margin:auto}
+.flotante .ico{margin-right:.35rem}
+.check .ico{width:1.05rem;height:1.05rem}
+.editar .ico{width:1.2rem;height:1.2rem;display:block;margin:auto}
+.vacio .ico{width:3.2rem;height:3.2rem;color:#b9c4ba}
+.sug .ico,.hab .ico{width:1.05em;height:1.05em;margin-right:.3em;opacity:.8}
+.secs .ico{width:1.15em;height:1.15em;margin-right:.35em}
+.orden .ico{width:1.15em;height:1.15em;margin-right:.4em;color:var(--verde)}
 .grupo{background:var(--tarjeta);border-radius:.9rem;box-shadow:0 1px 3px rgba(0,0,0,.07);overflow:hidden}
 .item{display:flex;align-items:center;gap:.7rem;padding:.55rem .4rem .55rem .8rem;min-height:3.3rem;border-top:1px solid var(--linea)}
 .item:first-child{border-top:0}
@@ -57,7 +67,7 @@ main{padding:.2rem .7rem 1rem}
 .carro-cab button.ver{flex:1;text-align:left;font-weight:700;color:var(--gris);font-size:.9rem;padding:.4rem 0}
 .carro-cab button.vaciar{background:#fff;border:1px solid var(--linea);border-radius:2rem;padding:.35rem .8rem;font-size:.85rem;color:var(--rojo)}
 .vacio{text-align:center;color:var(--gris);padding:2.5rem 1rem}
-.vacio div{font-size:3rem}
+.vacio div{line-height:1}
 .flotante{position:fixed;right:1rem;bottom:1.1rem;z-index:6;background:var(--ambar);color:#fff;border-radius:2rem;padding:.8rem 1.15rem;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,.25)}
 .flotante:active{transform:scale(.96)}
 .modal{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
@@ -87,7 +97,7 @@ main{padding:.2rem .7rem 1rem}
 .hab.borrar{background:#fdecea;color:var(--rojo)}
 .rfila{display:flex;gap:.35rem;align-items:center;padding:.35rem 0;border-top:1px solid var(--linea)}
 .rfila input[type=checkbox]{width:1.5rem;height:1.5rem;flex:none;accent-color:var(--verde)}
-.hoja .rfila .rs{width:2.9rem;height:2.9rem;flex:none;border-radius:.6rem;background:#f1f4f0;font-size:1.3rem}
+.hoja .rfila .rs{flex:none;width:4.9rem;padding:.55rem .2rem;border-radius:.6rem;background:#f1f4f0;font-size:.72rem;font-weight:600;color:var(--gris);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hoja .rfila .rn{flex:1;min-width:0}
 .hoja .rfila .rc{width:5.2rem;flex:none}
 .rfila.no{opacity:.5}
@@ -117,7 +127,7 @@ pre.registro{font-size:.62rem;white-space:pre-wrap;word-break:break-all;backgrou
 </head>
 <body>
 <header id="cab">
-  <div class="fila1"><h1>🛒 Lista de la compra</h1><span id="sync" class="sync off">…</span><button id="bAjustes" class="icono" aria-label="Ajustes">⚙</button></div>
+  <div class="fila1"><h1><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.2a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.2"/></svg>Lista de la compra</h1><span id="sync" class="sync off">…</span><button id="bAjustes" class="icono" aria-label="Ajustes"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h9M17 6.5h3M4 12h3M11 12h9M4 17.5h11M19 17.5h1"/><circle cx="15" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17.5" r="2"/></svg></button></div>
   <div id="chips" class="chips"></div>
 </header>
 <div id="barra" class="barra">
@@ -128,7 +138,7 @@ pre.registro{font-size:.62rem;white-space:pre-wrap;word-break:break-all;backgrou
 <div id="sugerencias" class="sugerencias"></div>
 <div id="avisoAct"></div>
 <main id="lista"></main>
-<button id="bHab" class="flotante">⭐ Habituales</button>
+<button id="bHab" class="flotante"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></svg>Habituales</button>
 <div id="modal" class="modal oculto"><div class="hoja" id="hoja"></div></div>
 <div id="toast" class="toast oculto"></div>
 <input id="fichero" type="file" accept="image/*" style="display:none">
@@ -160,8 +170,32 @@ function log(...a){
 }
 
 /* ============ Secciones del súper ============ */
-const SECCIONES=[['fruta','🍎','Fruta y verdura'],['carne','🥩','Carne'],['pescado','🐟','Pescado'],['charcuteria','🧀','Charcutería y quesos'],['lacteos','🥛','Lácteos y huevos'],['pan','🥖','Pan y bollería'],['despensa','🥫','Despensa'],['congelados','🧊','Congelados'],['bebidas','🧃','Bebidas'],['limpieza','🧽','Limpieza'],['higiene','🧴','Higiene y farmacia'],['mascotas','🐾','Mascotas'],['otros','🛒','Otros']];
-const SEC={};SECCIONES.forEach(s=>SEC[s[0]]={id:s[0],e:s[1],n:s[2]});
+const SECCIONES=[['fruta','','Fruta y verdura'],['carne','','Carne'],['pescado','','Pescado'],['charcuteria','','Charcutería y quesos'],['lacteos','','Lácteos y huevos'],['pan','','Pan y bollería'],['despensa','','Despensa'],['congelados','','Congelados'],['bebidas','','Bebidas'],['limpieza','','Limpieza'],['higiene','','Higiene y farmacia'],['mascotas','','Mascotas'],['otros','','Otros']];
+const ICONOS={
+fruta:'<path d="M12 8c-1.6-1.4-5.6-1.8-6.9 1.5-1.3 3.4.6 9.1 3.5 10.6 1.4.7 2.2-.2 3.4-.2s2 .9 3.4.2c2.9-1.5 4.8-7.2 3.5-10.6C17.6 6.2 13.6 6.6 12 8z"/><path d="M12 8c0-2.2.9-3.7 2.8-4.3"/>',
+carne:'<path d="M13.5 3.5c3.6-1 7.3 2.6 6.4 6.3-.8 3.2-4.3 5.6-7.4 5.2L9 18.5"/><path d="M13.5 3.5c-3.1.9-5.4 4.4-5 7.4L5 14.5"/><path d="M5 14.5a1.8 1.8 0 1 0-1.1 3.4 1.8 1.8 0 1 0 3.4 1.1L9 18.5"/>',
+pescado:'<path d="M2.5 12c3-4.6 8.8-6.1 13.3-3.1L20.5 5.5v13l-4.7-3.4C11.3 18.1 5.5 16.6 2.5 12z"/><path d="M7.5 11.2v.1"/>',
+charcuteria:'<path d="M3 15.5 13.5 7l7.5 3.7v8.8H3z"/><path d="M3 15.5h18"/><path d="M8 18.2v.1M15.5 13v.1"/>',
+lacteos:'<path d="M8.5 2.5h7v3.3l2.5 3.7v12h-12v-12l2.5-3.7z"/><path d="M6 9.5h12M8.5 5.8h7"/>',
+pan:'<path d="M6 20.5v-9.3A4 4 0 0 1 7 3.5h10a4 4 0 0 1 1 7.7v9.3z"/><path d="M10 8v3M14 8v3"/>',
+despensa:'<rect x="5.5" y="7.5" width="13" height="14" rx="2"/><path d="M7 3.5h10v4H7zM5.5 12.5h13"/>',
+congelados:'<path d="M12 2.5v19M3.8 7.2l16.4 9.6M3.8 16.8l16.4-9.6"/><path d="M9.5 4 12 6.5 14.5 4M9.5 20l2.5-2.5 2.5 2.5"/>',
+bebidas:'<path d="M10 2.5h4v4.3l1.9 2.8c.4.6.6 1.3.6 2V20a1.5 1.5 0 0 1-1.5 1.5H9A1.5 1.5 0 0 1 7.5 20v-8.4c0-.7.2-1.4.6-2L10 6.8z"/><path d="M7.5 14h9"/>',
+limpieza:'<path d="M7.5 10.5h7v10a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1z"/><path d="M9 10.5v-4h4v4M8 6.5h7.5l1.5-3H10"/><path d="M19.5 6.5h1.5M19 9l1.2.9M19 4l1.2-.9"/>',
+higiene:'<path d="M7.5 10h9v10a1.5 1.5 0 0 1-1.5 1.5H9A1.5 1.5 0 0 1 7.5 20z"/><path d="M10.5 10V7h3v3M12 7V4H8.5"/><path d="M10 15.5h4M12 13.5v4"/>',
+mascotas:'<circle cx="6.5" cy="10.5" r="1.7"/><circle cx="10" cy="6.5" r="1.7"/><circle cx="14" cy="6.5" r="1.7"/><circle cx="17.5" cy="10.5" r="1.7"/><path d="M8.3 17.6c0-2.7 1.7-5.3 3.7-5.3s3.7 2.6 3.7 5.3c0 1.7-1.4 2.6-3.7 2.6s-3.7-.9-3.7-2.6z"/>',
+otros:'<path d="M5 8h14l-1.1 12.5a1 1 0 0 1-1 .9H7.1a1 1 0 0 1-1-.9z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+carrito:'<circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M2.5 3.5h2.6l2.4 11.2a1.5 1.5 0 0 0 1.5 1.2h8.2a1.5 1.5 0 0 0 1.5-1.1L20.5 8H6.2"/>',
+ajustes:'<path d="M4 6.5h9M17 6.5h3M4 12h3M11 12h9M4 17.5h11M19 17.5h1"/><circle cx="15" cy="6.5" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="17.5" r="2"/>',
+estrella:'<path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+lapiz:'<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M14.5 7.5l3 3"/>',
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+cesta:'<path d="M3 10h18l-1.8 9.2a1.5 1.5 0 0 1-1.5 1.3H6.3a1.5 1.5 0 0 1-1.5-1.3z"/><path d="M7.5 10l3-6M16.5 10l-3-6M9 14v3M15 14v3M12 14v3"/>',
+lista:'<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/>',
+};
+const ico=n=>'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+(ICONOS[n]||ICONOS.otros)+'</svg>';
+const CORTO={fruta:'Fruta',carne:'Carne',pescado:'Pescado',charcuteria:'Charcutería',lacteos:'Lácteos',pan:'Pan',despensa:'Despensa',congelados:'Congelados',bebidas:'Bebidas',limpieza:'Limpieza',higiene:'Higiene',mascotas:'Mascotas',otros:'Otros'};
+const SEC={};SECCIONES.forEach(s=>SEC[s[0]]={id:s[0],e:ico(s[0]),n:s[2],c:CORTO[s[0]]||s[2]});
 
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 const clave=s=>norm(s).replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60)||'x';
@@ -370,7 +404,7 @@ function pintarSync(){
   let t,c='';
   if(esDemo()){t='modo prueba';c='off';}
   else if(!configurado()){t='sin configurar';c='off';}
-  else if(estadoSync==='err'){t='⚠ error';c='err';}
+  else if(estadoSync==='err'){t='error';c='err';}
   else if(estadoSync==='on'){t=pend.length?'⟳ guardando':'● al día';}
   else{t=pend.length?`○ sin conexión (${pend.length})`:'○ sin conexión';c='off';}
   el.textContent=t;el.className='sync '+c;
@@ -460,19 +494,19 @@ function render(){
   document.documentElement.style.setProperty('--alto-cab',$('#cab').offsetHeight+'px');
   const main=$('#lista');
   if(!configurado()){main.innerHTML='';return;}
-  if(!L){main.innerHTML=`<div class="vacio"><div>📋</div><p>Todavía no hay ninguna lista.</p><button class="boton prim" data-accion="nuevaLista">Crear una lista</button></div>`;return;}
+  if(!L){main.innerHTML=`<div class="vacio"><div>${ico('lista')}</div><p>Todavía no hay ninguna lista.</p><button class="boton prim" data-accion="nuevaLista">Crear una lista</button></div>`;return;}
   const its=itemsDe(L);
   const pend=its.filter(it=>!it.hecho),hechos=its.filter(it=>it.hecho).sort((a,b)=>(b.cuando||0)-(a.cuando||0));
   let h='';
-  if(!pend.length&&!hechos.length)h+=`<div class="vacio"><div>🧺</div><p>La lista «${esc(D.listas[L].nombre)}» está vacía.</p><p class="nota">Escribe arriba, pulsa 🎤 para dictar o 📷 para sacar una foto de una lista en papel.</p></div>`;
-  else if(!pend.length)h+=`<div class="vacio"><div>🎉</div><p>¡Todo comprado!</p></div>`;
+  if(!pend.length&&!hechos.length)h+=`<div class="vacio"><div>${ico('cesta')}</div><p>La lista «${esc(D.listas[L].nombre)}» está vacía.</p><p class="nota">Escribe arriba, usa el micrófono para dictar o la cámara para sacar una foto de una lista en papel.</p></div>`;
+  else if(!pend.length)h+=`<div class="vacio"><div>${ico('check')}</div><p>¡Todo comprado!</p></div>`;
   for(const s of ordenSecciones()){
     const g=pend.filter(it=>(SEC[it.seccion]?it.seccion:'otros')===s).sort((a,b)=>norm(a.nombre).localeCompare(norm(b.nombre)));
     if(!g.length)continue;
     h+=`<div class="seccion"><span>${SEC[s].e}</span>${esc(SEC[s].n)}</div><div class="grupo">${g.map(filaItem).join('')}</div>`;
   }
   if(hechos.length){
-    h+=`<div class="carro-cab"><button class="ver" data-accion="verCarro">${verCarro?'▾':'▸'} En el carro (${hechos.length})</button><button class="vaciar" data-accion="vaciar">🗑 Quitar del todo</button></div>`;
+    h+=`<div class="carro-cab"><button class="ver" data-accion="verCarro">${verCarro?'▾':'▸'} En el carro (${hechos.length})</button><button class="vaciar" data-accion="vaciar">Quitar del todo</button></div>`;
     if(verCarro)h+=`<div class="grupo">${hechos.map(filaItem).join('')}</div>`;
   }
   main.innerHTML=h;
@@ -480,7 +514,7 @@ function render(){
 function filaItem(it){
   let quien=it.por?`Añadido por ${it.por===CFG.nombre?'ti':it.por}`:'';
   if(it.hecho)quien=`Cogido${it.hechoPor?' por '+(it.hechoPor===CFG.nombre?'ti':it.hechoPor):''} ${haceCuanto(it.cuando)}`;
-  return `<div class="item ${it.hecho?'hecho':''}" data-id="${esc(it.id)}"><span class="check">${it.hecho?'✓':''}</span><span class="txt"><span class="nom">${esc(it.nombre)}</span>${it.cantidad?`<span class="cant">${esc(it.cantidad)}</span>`:''}${quien?`<span class="por">${esc(quien)}</span>`:''}</span><button class="editar" data-editar="${esc(it.id)}" aria-label="Editar">✎</button></div>`;
+  return `<div class="item ${it.hecho?'hecho':''}" data-id="${esc(it.id)}"><span class="check">${it.hecho?ico('check'):''}</span><span class="txt"><span class="nom">${esc(it.nombre)}</span>${it.cantidad?`<span class="cant">${esc(it.cantidad)}</span>`:''}${quien?`<span class="por">${esc(quien)}</span>`:''}</span><button class="editar" data-editar="${esc(it.id)}" aria-label="Editar">${ico('lapiz')}</button></div>`;
 }
 function pintarSugerencias(){
   const q=norm($('#entrada').value.trim());
@@ -489,7 +523,7 @@ function pintarSugerencias(){
   const L=listaSel();
   const hs=Object.values(D.habituales).filter(h=>h&&h.nombre&&norm(h.nombre).includes(q)&&!pendienteEnLista(L,clave(h.nombre)))
     .sort((a,b)=>(norm(b.nombre).startsWith(q)-norm(a.nombre).startsWith(q))||((b.veces||0)-(a.veces||0))).slice(0,6);
-  cont.innerHTML=hs.map(h=>`<button class="sug" data-k="${esc(clave(h.nombre))}">${(SEC[h.seccion]||SEC.otros).e} ${esc(h.nombre)}</button>`).join('');
+  cont.innerHTML=hs.map(h=>`<button class="sug" data-k="${esc(clave(h.nombre))}">${(SEC[h.seccion]||SEC.otros).e}${esc(h.nombre)}</button>`).join('');
 }
 function aplicarLetra(){const r=document.documentElement;r.classList.remove('letra-normal','letra-muy');if(CFG.letra==='normal')r.classList.add('letra-normal');if(CFG.letra==='muy')r.classList.add('letra-muy');}
 
@@ -513,20 +547,20 @@ window.atras=()=>{
   if($('#entrada').value){$('#entrada').value='';pintarSugerencias();return true;}
   return false;
 };
-function htmlSecciones(sel){return `<div class="secs">${SECCIONES.map(s=>`<button data-sec="${s[0]}" class="${s[0]===sel?'sel':''}">${s[1]} ${esc(s[2])}</button>`).join('')}</div>`;}
+function htmlSecciones(sel,sinIconos){return `<div class="secs">${SECCIONES.map(s=>`<button data-sec="${s[0]}" class="${s[0]===sel?'sel':''}">${sinIconos?'':ico(s[0])}${esc(s[2])}</button>`).join('')}</div>`;}
 function montarSecciones(raiz,fn){raiz.querySelectorAll('[data-sec]').forEach(b=>b.onclick=()=>{raiz.querySelectorAll('[data-sec]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');fn(b.dataset.sec);});}
 
 /* ---- Editar producto ---- */
 function editarItem(L,id){
   const it=(D.items[L]||{})[id];if(!it)return;
   let sec=SEC[it.seccion]?it.seccion:'otros';
-  abrir({html:()=>`<h2>✎ Editar producto</h2>
+  abrir({html:()=>`<h2>Editar producto</h2>
     <label>Producto</label><input id="eN" value="${esc(it.nombre)}">
     <label>Cantidad</label><input id="eC" value="${esc(it.cantidad||'')}" placeholder="Ej.: 2 · 1 kg · 6 latas">
     <label>Sección</label>${htmlSecciones(sec)}
     ${listasOrdenadas().length>1?`<label>Lista</label><select id="eL">${listasOrdenadas().map(x=>`<option value="${esc(x)}" ${x===L?'selected':''}>${esc(D.listas[x].nombre)}</option>`).join('')}</select>`:''}
     <p class="nota">${it.por?'Añadido por '+esc(it.por)+' ':''}${esc(haceCuanto(it.creado))}</p>
-    <div class="botones"><button class="peligro" id="eB">🗑 Borrar</button><button id="eX">Cancelar</button><button class="prim" id="eG">Guardar</button></div>`,
+    <div class="botones"><button class="peligro" id="eB">Borrar</button><button id="eX">Cancelar</button><button class="prim" id="eG">Guardar</button></div>`,
   montar:r=>{
     montarSecciones(r,s=>sec=s);
     r.querySelector('#eX').onclick=cerrar;
@@ -568,10 +602,10 @@ function nuevaLista(){
 function opcionesLista(L){
   const l=D.listas[L];if(!l)return;
   let confirmar=false;
-  const v={html:()=>`<h2>📋 Lista «${esc(l.nombre)}»</h2>
+  const v={html:()=>`<h2>Lista «${esc(l.nombre)}»</h2>
     <label>Nombre</label><input id="oN" value="${esc(l.nombre)}">
     <div class="botones"><button id="oI">◀ Mover a la izquierda</button><button id="oD">Mover a la derecha ▶</button></div>
-    <div class="botones"><button class="peligro" id="oB">${confirmar?`¿Seguro? Se borran sus ${itemsDe(L).length} productos`:'🗑 Borrar la lista'}</button></div>
+    <div class="botones"><button class="peligro" id="oB">${confirmar?`¿Seguro? Se borran sus ${itemsDe(L).length} productos`:'Borrar la lista'}</button></div>
     <div class="botones"><button id="oX">Cancelar</button><button class="prim" id="oG">Guardar</button></div>`,
   montar:r=>{
     r.querySelector('#oX').onclick=cerrar;
@@ -595,11 +629,11 @@ function opcionesLista(L){
 /* ---- Habituales ---- */
 function abrirHabituales(){
   let q='',quitar=false;
-  const v={html:()=>`<h2>⭐ Habituales</h2>
+  const v={html:()=>`<h2>Habituales</h2>
     <p class="nota">Lo que más compráis, para añadirlo con un toque a «${esc((D.listas[listaSel()]||{}).nombre||'')}». Se apunta solo cada vez que añadís algo. Verde = ya está en la lista (tócalo para quitarlo).</p>
-    <input id="hB" placeholder="🔍 Buscar…" value="${esc(q)}">
+    <input id="hB" placeholder="Buscar…" value="${esc(q)}">
     <div id="hG" class="hgrid"></div>
-    <div class="botones"><button id="hQ">${quitar?'✓ Terminar de quitar':'✕ Quitar habituales'}</button><button class="prim" id="hX">Hecho</button></div>`,
+    <div class="botones"><button id="hQ">${quitar?'Terminar de quitar':'Quitar habituales'}</button><button class="prim" id="hX">Hecho</button></div>`,
   montar:r=>{
     const inp=r.querySelector('#hB');
     inp.oninput=()=>{q=inp.value;v.actualizar();};
@@ -620,7 +654,7 @@ function abrirHabituales(){
     const L=listaSel(),nq=norm(q.trim());
     const hs=Object.entries(D.habituales).filter(([,h])=>h&&h.nombre&&(!nq||norm(h.nombre).includes(nq)))
       .sort((a,b)=>((b[1].veces||0)-(a[1].veces||0))||norm(a[1].nombre).localeCompare(norm(b[1].nombre))).slice(0,250);
-    g.innerHTML=hs.length?hs.map(([k,h])=>`<button class="hab ${quitar?'borrar':(pendienteEnLista(L,k)?'ya':'')}" data-k="${esc(k)}">${quitar?'✕ ':(SEC[h.seccion]||SEC.otros).e+' '}${esc(h.nombre)}</button>`).join('')
+    g.innerHTML=hs.length?hs.map(([k,h])=>`<button class="hab ${quitar?'borrar':(pendienteEnLista(L,k)?'ya':'')}" data-k="${esc(k)}">${quitar?'× ':(SEC[h.seccion]||SEC.otros).e}${esc(h.nombre)}</button>`).join('')
       :`<p class="nota">${nq?'No hay ninguno con ese nombre.':'Todavía no hay habituales: se irán apuntando solos a medida que añadáis productos.'}</p>`;
   }};
   abrir(v);
@@ -656,14 +690,14 @@ function sumarProductos(prods){
 }
 function htmlRev(){
   const L=listaSel(),n=REV.prods.filter(p=>p.ok&&p.nombre.trim()).length;
-  return `<h2>📝 Revisa antes de añadir</h2>
+  return `<h2>Revisa antes de añadir</h2>
   ${REV.foto?`<img class="mini" src="data:image/jpeg;base64,${REV.foto}">`:''}
-  ${REV.texto?`<div class="dicho">🎤 «${esc(REV.texto)}»</div>`:''}
+  ${REV.texto?`<div class="dicho">«${esc(REV.texto)}»</div>`:''}
   ${REV.cargando?`<div class="cargando"><span class="spin"></span>${esc(REV.cargando)}</div>`:''}
   ${REV.error?`<p class="err">${esc(REV.error)}</p>${REV.foto?'<div class="botones"><button class="prim" id="rRe">Reintentar con la misma foto</button></div>':''}`:''}
-  <div id="rL">${REV.prods.map((p,i)=>`<div class="rfila ${p.ok?'':'no'}" data-i="${i}"><input type="checkbox" class="rk" ${p.ok?'checked':''}><button class="rs" data-sec="${p.seccion}" aria-label="Sección">${(SEC[p.seccion]||SEC.otros).e}</button><input class="rn" value="${esc(p.nombre)}"><input class="rc" value="${esc(p.cantidad)}" placeholder="cant."></div>${p.ya?'<span class="ya-esta">Ya está en la lista (márcalo si quieres cambiar la cantidad)</span>':''}`).join('')}</div>
+  <div id="rL">${REV.prods.map((p,i)=>`<div class="rfila ${p.ok?'':'no'}" data-i="${i}"><input type="checkbox" class="rk" ${p.ok?'checked':''}><button class="rs" data-sec="${p.seccion}" aria-label="Sección">${esc((SEC[p.seccion]||SEC.otros).c)}</button><input class="rn" value="${esc(p.nombre)}"><input class="rc" value="${esc(p.cantidad)}" placeholder="cant."></div>${p.ya?'<span class="ya-esta">Ya está en la lista (márcalo si quieres cambiar la cantidad)</span>':''}`).join('')}</div>
   ${!REV.cargando&&!REV.prods.length&&!REV.error?'<p class="nota">No se ha encontrado ningún producto.</p>':''}
-  ${REV.cargando?'':`<div class="botones"><button id="rMas">＋ Otro a mano</button><button id="rVoz">🎤 Dictar más</button></div>`}
+  ${REV.cargando?'':`<div class="botones"><button id="rMas">＋ Otro a mano</button><button id="rVoz">Dictar más</button></div>`}
   <div class="botones"><button id="rNo">Cancelar</button><button class="prim" id="rOk" ${n&&!REV.cargando?'':'disabled'}>Añadir ${n} a «${esc((D.listas[L]||{}).nombre||'')}»</button></div>`;
 }
 function montarRev(r){
@@ -673,7 +707,7 @@ function montarRev(r){
   r.querySelector('#rL').addEventListener('click',e=>{
     const b=e.target.closest('.rs');if(!b||REV.cargando)return;
     leerRevDOM();const i=+b.closest('.rfila').dataset.i,p=REV.prods[i];
-    abrir({html:()=>`<h2>Sección de «${esc(p.nombre||'producto')}»</h2>`+htmlSecciones(p.seccion),montar:r2=>montarSecciones(r2,sec=>{p.seccion=sec;cerrar();})});
+    abrir({html:()=>`<h2>Sección de «${esc(p.nombre||'producto')}»</h2>`+htmlSecciones(p.seccion,true),montar:r2=>montarSecciones(r2,sec=>{p.seccion=sec;cerrar();})});
   });
   r.querySelector('#rNo').onclick=()=>{REV=null;cerrar();};
   const mas=r.querySelector('#rMas');
@@ -722,14 +756,14 @@ async function buscarModelo(excluir){
 function mensajeGemini(r){
   const t=r.text||'';
   if(r.status===0)return 'No hay conexión a internet.';
-  if(/API_KEY_INVALID|API key not valid/i.test(t))return 'La clave de Gemini no es válida. Revísala en ⚙ Ajustes.';
+  if(/API_KEY_INVALID|API key not valid/i.test(t))return 'La clave de Gemini no es válida. Revísala en Ajustes.';
   if(r.status===403)return 'La clave de Gemini no tiene permiso. Crea una nueva en aistudio.google.com.';
   if(r.status===429)return 'Se ha llegado al límite gratuito de Gemini por ahora. Espera un minuto y vuelve a probar.';
   if(r.status===400&&/location|region|country/i.test(t))return 'Gemini no está disponible desde aquí con esta clave.';
-  return `Gemini ha fallado (código ${r.status}). Mira el registro en ⚙ Ajustes.`;
+  return `Gemini ha fallado (código ${r.status}). Mira el registro en Ajustes.`;
 }
 async function gemini(parts){
-  if(!CFG.gemini)throw new Error('Falta la clave de Gemini (⚙ Ajustes).');
+  if(!CFG.gemini)throw new Error('Falta la clave de Gemini (Ajustes).');
   const cuerpo=JSON.stringify({contents:[{role:'user',parts}],generationConfig:{temperature:0.1,responseMimeType:'application/json',responseSchema:ESQUEMA}});
   let modelo=CFG.modelo||'gemini-flash-latest';
   const probados=new Set();
@@ -768,17 +802,17 @@ async function gemini(parts){
 function pedirFoto(){
   if(!configurado()){bienvenida();return;}
   if(!CFG.gemini){
-    abrir({html:()=>`<h2>📷 Leer una lista en papel</h2>
+    abrir({html:()=>`<h2>Leer una lista en papel</h2>
       <p>Para leer listas escritas a mano la app usa <b>Gemini</b>, la inteligencia artificial de Google. Hace falta una clave gratuita (se saca en 2 minutos con tu cuenta de Google).</p>
-      <p class="nota">Cómo: entra en <b>aistudio.google.com</b> → «Get API key» → «Create API key» → copia la clave y pégala en ⚙ Ajustes. Está explicado en el README.</p>
+      <p class="nota">Cómo: entra en <b>aistudio.google.com</b> → «Get API key» → «Create API key» → copia la clave y pégala en Ajustes. Está explicado en el README.</p>
       <div class="botones"><button id="gX">Ahora no</button><button class="prim" id="gA">Ir a Ajustes</button></div>`,
       montar:r=>{r.querySelector('#gX').onclick=cerrar;r.querySelector('#gA').onclick=()=>{cerrar();abrirAjustes();};}});
     return;
   }
-  abrir({html:()=>`<h2>📷 Foto de una lista escrita</h2>
+  abrir({html:()=>`<h2>Foto de una lista escrita</h2>
     <p class="nota">Pon la lista sobre la mesa con buena luz y que se vea entera. Vale papel, post-it o pizarra.</p>
-    <button class="boton prim bloque" id="fC">📸 Hacer la foto</button>
-    <button class="boton bloque" id="fG">🖼 Elegir de la galería</button>
+    <button class="boton prim bloque" id="fC">Hacer la foto</button>
+    <button class="boton bloque" id="fG">Elegir de la galería</button>
     <button class="boton bloque" id="fX">Cancelar</button>`,
   montar:r=>{r.querySelector('#fC').onclick=()=>{cerrar();tomarFoto(true);};r.querySelector('#fG').onclick=()=>{cerrar();tomarFoto(false);};r.querySelector('#fX').onclick=cerrar;}});
 }
@@ -893,7 +927,7 @@ window.__permisoInstalar=()=>aviso('Activa «Permitir de esta fuente» y vuelve 
 
 /* ============ Ajustes ============ */
 function codigoEnlace(){return 'LISTA-'+b64cod(JSON.stringify({u:CFG.db,h:CFG.hogar,k:CFG.gemini||''}));}
-function textoParaCompartir(){return `Para tener la lista de la compra compartida conmigo: abre la app «Lista de la compra», pulsa «Tengo un código» (o ⚙ Ajustes → Unirme con un código) y pega este mensaje entero:\n\n${codigoEnlace()}`;}
+function textoParaCompartir(){return `Para tener la lista de la compra compartida conmigo: abre la app «Lista de la compra», pulsa «Tengo un código» (o Ajustes → Unirme con un código) y pega este mensaje entero:\n\n${codigoEnlace()}`;}
 function compartirCodigo(){if(AND)AND.compartir(textoParaCompartir());else{navigator.clipboard&&navigator.clipboard.writeText(textoParaCompartir());aviso('Código copiado');}}
 function leerCodigo(txt){
   const m=String(txt||'').match(/LISTA-([A-Za-z0-9_-]+)/);
@@ -911,28 +945,28 @@ const urlValida=u=>/^https:\/\/[a-z0-9.-]+\.(firebaseio\.com|firebasedatabase\.a
 function pegarDe(inp){if(AND){const t=AND.pegar();if(t)inp.value=t;}else if(navigator.clipboard)navigator.clipboard.readText().then(t=>inp.value=t).catch(()=>{});}
 
 function abrirAjustes(){
-  const v={html:()=>`<h2>⚙ Ajustes</h2>
+  const v={html:()=>`<h2>Ajustes</h2>
     <label>Tu nombre (sale en lo que añades)</label><input id="aN" value="${esc(CFG.nombre)}">
-    <h3>👫 Compartir la lista</h3>
-    ${esDemo()?'<p class="nota">Estás en modo prueba (solo en este móvil). Para compartir, crea la lista de casa con Firebase.</p><button class="boton prim bloque" id="aCrear">🏠 Crear la lista de casa</button>':
+    <h3>Compartir la lista</h3>
+    ${esDemo()?'<p class="nota">Estás en modo prueba (solo en este móvil). Para compartir, crea la lista de casa con Firebase.</p><button class="boton prim bloque" id="aCrear">Crear la lista de casa</button>':
       configurado()?`<p class="nota">Envía este código a tu mujer por WhatsApp. En su móvil, «Unirme con un código» y pegarlo.${CFG.gemini?' Lleva también la clave de Gemini, así su móvil también lee fotos.':''}</p>
-      <div class="botones"><button class="prim" id="aComp">📤 Enviar el código</button></div>`:''}
-    <button class="boton bloque" id="aUnir">🔗 Unirme con un código</button>
-    ${configurado()&&!esDemo()?'<button class="boton bloque" id="aNueva">🏠 Cambiar a un código nuevo (si se ha filtrado)</button>':''}
+      <div class="botones"><button class="prim" id="aComp">Enviar el código</button></div>`:''}
+    <button class="boton bloque" id="aUnir">Unirme con un código</button>
+    ${configurado()&&!esDemo()?'<button class="boton bloque" id="aNueva">Cambiar a un código nuevo (si se ha filtrado)</button>':''}
     <label>Dirección de Firebase</label><input id="aDb" value="${esc(esDemo()?'':CFG.db)}" placeholder="https://…firebasedatabase.app" inputmode="url">
-    <h3>📷 Leer fotos con Gemini</h3>
+    <h3>Leer fotos con Gemini</h3>
     <label>Clave de Gemini (gratis en aistudio.google.com)</label><input id="aK" value="${esc(CFG.gemini)}" placeholder="AIza…" autocomplete="off">
     <label>Modelo</label><input id="aM" value="${esc(CFG.modelo)}">
     <p class="nota">Si el modelo deja de existir, la app busca otro sola.</p>
     <div class="botones"><button id="aProbar">Probar Gemini</button></div>
-    <h3>🔠 Tamaño de letra</h3>
+    <h3>Tamaño de letra</h3>
     <div class="opciones3">${[['normal','Normal'],['grande','Grande'],['muy','Muy grande']].map(([k,t])=>`<button data-letra="${k}" class="${CFG.letra===k?'sel':''}">${t}</button>`).join('')}</div>
-    <h3>🧭 Orden de las secciones (como los pasillos de tu súper)</h3>
-    <div id="aOrden">${ordenSecciones().map((s,i,a)=>`<div class="orden"><span>${SEC[s].e} ${esc(SEC[s].n)}</span><button data-sube="${s}" ${i?'':'disabled'}>▲</button><button data-baja="${s}" ${i<a.length-1?'':'disabled'}>▼</button></div>`).join('')}</div>
-    <h3>⬇ Actualizaciones</h3>
+    <h3>Orden de las secciones (como los pasillos de tu súper)</h3>
+    <div id="aOrden">${ordenSecciones().map((s,i,a)=>`<div class="orden"><span>${SEC[s].e}${esc(SEC[s].n)}</span><button data-sube="${s}" ${i?'':'disabled'}>▲</button><button data-baja="${s}" ${i<a.length-1?'':'disabled'}>▼</button></div>`).join('')}</div>
+    <h3>Actualizaciones</h3>
     <p class="nota">Versión instalada: ${esc(AND&&AND.version?AND.version():VERSION_WEB)}. La app mira sola si hay versión nueva al abrirla y cada 12 horas (te avisa con una notificación).</p>
     <div class="botones"><button id="aAct">Buscar actualizaciones</button></div>
-    <h3>🛠 Si algo no funciona</h3>
+    <h3>Si algo no funciona</h3>
     <div class="botones"><button id="aReg">Registro de pruebas</button></div>
     <p class="nota">Versión ${esc(AND&&AND.version?AND.version():VERSION_WEB)}</p>
     <div class="botones"><button class="prim" id="aX">Hecho</button></div>`,
@@ -955,7 +989,7 @@ function abrirAjustes(){
     q('#aProbar').onclick=async()=>{
       CFG.gemini=q('#aK').value.trim();guardarCfg();
       aviso('Probando Gemini…');
-      try{const p=await gemini([{text:promptBase()+'\nTexto dictado: «dos barras de pan y un litro de leche»'}]);aviso('✓ Gemini funciona ('+CFG.modelo+'): '+p.map(x=>x.nombre).join(', '));q('#aM').value=CFG.modelo;}
+      try{const p=await gemini([{text:promptBase()+'\nTexto dictado: «dos barras de pan y un litro de leche»'}]);aviso('Gemini funciona ('+CFG.modelo+'): '+p.map(x=>x.nombre).join(', '));q('#aM').value=CFG.modelo;}
       catch(e){aviso(e.message,true);}
     };
     r.querySelectorAll('[data-letra]').forEach(b=>b.onclick=()=>{CFG.letra=b.dataset.letra;guardarCfg();aplicarLetra();pintarModal();render();});
@@ -970,7 +1004,7 @@ function abrirAjustes(){
 }
 function abrirRegistro(){
   const texto=()=>[`Versión ${AND&&AND.version?AND.version():VERSION_WEB} · ${navigator.userAgent}`,`Nombre: ${CFG.nombre} · Firebase: ${CFG.db} · casa: ${CFG.hogar?CFG.hogar.slice(0,4)+'…':'-'} · Gemini: ${CFG.gemini?'sí':'no'} (${CFG.modelo})`,`Directo: ${estadoSync} · pendientes: ${pend.length} · listas: ${Object.keys(D.listas).length} · habituales: ${Object.keys(D.habituales).length}`,'---',...REG].join('\n');
-  abrir({html:()=>`<h2>🛠 Registro de pruebas</h2><pre class="registro">${esc(texto())}</pre>
+  abrir({html:()=>`<h2>Registro de pruebas</h2><pre class="registro">${esc(texto())}</pre>
     <div class="botones"><button id="rP">Prueba completa</button><button id="rC">Copiar todo</button></div><div class="botones"><button class="prim" id="rX">Cerrar</button></div>`,
   montar:r=>{
     r.querySelector('#rX').onclick=cerrar;
@@ -989,13 +1023,13 @@ function abrirRegistro(){
 /* ============ Primera vez ============ */
 function bienvenida(){
   if(pila.some(v=>v.id==='bien'))return;
-  abrir({id:'bien',fijo:true,html:()=>`<h2>👋 Lista de la compra compartida</h2>
+  abrir({id:'bien',fijo:true,html:()=>`<h2>Lista de la compra compartida</h2>
     <label>¿Cómo te llamas?</label><input id="wN" value="${esc(CFG.nombre)}" placeholder="Ej.: Suso">
     <p class="nota">Así sabréis quién ha añadido cada cosa.</p>
     <h3>¿Es el primer móvil de casa con esta app?</h3>
-    <button class="boton prim bloque" id="wC">🏠 Sí: crear nuestra lista</button>
-    <button class="boton bloque" id="wU">🔗 No: tengo un código</button>
-    <button class="boton bloque" id="wD">🧪 Probar sin conexión (solo este móvil)</button>`,
+    <button class="boton prim bloque" id="wC">Sí: crear nuestra lista</button>
+    <button class="boton bloque" id="wU">No: tengo un código</button>
+    <button class="boton bloque" id="wD">Probar sin conexión (solo este móvil)</button>`,
   montar:r=>{
     const nombre=()=>{const n=cap(r.querySelector('#wN').value);if(!n){aviso('Escribe tu nombre',true);r.querySelector('#wN').focus();return false;}CFG.nombre=n;guardarCfg();return true;};
     r.querySelector('#wC').onclick=()=>{if(nombre())pasoCrear();};
@@ -1018,10 +1052,10 @@ function crearHogar(url){
   else{const id=nuevoId();CFG.lista=id;guardarCfg();escribir('PUT','listas/'+id,{nombre:'Compra',orden:1});}
 }
 function pasoCrear(){
-  abrir({id:'crear',html:()=>`<h2>🏠 Crear la lista de casa</h2>
+  abrir({id:'crear',html:()=>`<h2>Crear la lista de casa</h2>
     <p class="nota">Pega la dirección de tu base de datos de Firebase (README, paso 1). Se parece a esto:<br><span class="codigo">https://lista-compra-1234-default-rtdb.europe-west1.firebasedatabase.app</span></p>
     <label>Dirección de Firebase</label><input id="cU" placeholder="https://…" inputmode="url" value="${esc(esDemo()?'':CFG.db)}">
-    <div class="botones"><button id="cP">📋 Pegar</button></div>
+    <div class="botones"><button id="cP">Pegar</button></div>
     <div class="botones"><button id="cX">Atrás</button><button class="prim" id="cG">Crear</button></div>`,
   montar:r=>{
     const inp=r.querySelector('#cU');
@@ -1035,19 +1069,19 @@ function pasoCrear(){
   }});
 }
 function pasoCompartir(){
-  abrir({html:()=>`<h2>✅ ¡Lista creada!</h2>
+  abrir({html:()=>`<h2>¡Lista creada!</h2>
     <p>Ahora envía el código a tu mujer. Ella instala la app, escribe su nombre, pulsa <b>«Tengo un código»</b> y pega el mensaje.</p>
-    <div class="botones"><button class="prim" id="sC">📤 Enviar por WhatsApp…</button></div>
-    <p class="nota">También puedes enviarlo más tarde desde ⚙ Ajustes.${CFG.gemini?'':' Para leer fotos de listas en papel, pon la clave de Gemini en ⚙ Ajustes antes de enviar el código y así le vale también a ella.'}</p>
+    <div class="botones"><button class="prim" id="sC">Enviar por WhatsApp…</button></div>
+    <p class="nota">También puedes enviarlo más tarde desde Ajustes.${CFG.gemini?'':' Para leer fotos de listas en papel, pon la clave de Gemini en Ajustes antes de enviar el código y así le vale también a ella.'}</p>
     <div class="botones"><button id="sX">Hecho</button></div>`,
   montar:r=>{r.querySelector('#sC').onclick=compartirCodigo;r.querySelector('#sX').onclick=cerrar;}});
 }
 function pasoUnir(desdeBienvenida){
-  abrir({id:'unir',html:()=>`<h2>🔗 Unirme a la lista de casa</h2>
+  abrir({id:'unir',html:()=>`<h2>Unirme a la lista de casa</h2>
     <p class="nota">Pega aquí el mensaje que te han enviado (el que tiene LISTA-…).</p>
     <textarea id="uT" placeholder="LISTA-…"></textarea>
-    <div class="botones"><button id="uP">📋 Pegar</button></div>
-    ${!desdeBienvenida&&configurado()&&!esDemo()?'<p class="nota">⚠ Dejarás de ver la lista actual de este móvil y verás la del código.</p>':''}
+    <div class="botones"><button id="uP">Pegar</button></div>
+    ${!desdeBienvenida&&configurado()&&!esDemo()?'<p class="nota">Dejarás de ver la lista actual de este móvil y verás la del código.</p>':''}
     <div class="botones"><button id="uX">Atrás</button><button class="prim" id="uG">Unirme</button></div>`,
   montar:r=>{
     const t=r.querySelector('#uT');
