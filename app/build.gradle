@@ -2,6 +2,9 @@ plugins {
     id 'com.android.application'
 }
 
+// Número de versión: lo pone GitHub en cada compilación (1, 2, 3…)
+def codigoVersion = (System.getenv('VERSION_CODE') ?: '1').toInteger()
+
 android {
     namespace 'com.suso.listacompra'
     compileSdk 34
@@ -10,18 +13,19 @@ android {
         applicationId 'com.suso.listacompra'
         minSdk 24
         targetSdk 34
-        versionCode 1
-        versionName '1.0'
+        versionCode codigoVersion
+        versionName "1.${codigoVersion}"
     }
 
     signingConfigs {
-        // Siempre la misma firma: así las versiones nuevas se instalan encima. No borres el .keystore
+        // La firma NO está en el repositorio: GitHub la crea en cada compilación a partir
+        // de los secretos KEYSTORE_B64 y KEYSTORE_PASS (Settings → Secrets → Actions).
         firma {
             storeFile file('listacompra.keystore')
             storeType 'pkcs12'
-            storePassword 'listacompra'
+            storePassword System.getenv('KEYSTORE_PASS')
             keyAlias 'listacompra'
-            keyPassword 'listacompra'
+            keyPassword System.getenv('KEYSTORE_PASS')
         }
     }
 
