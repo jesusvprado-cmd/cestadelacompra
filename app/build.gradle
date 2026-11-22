@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.suso.listacompra'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'com.suso.listacompra'
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName '1.0'
+    }
+
+    signingConfigs {
+        // Siempre la misma firma: así las versiones nuevas se instalan encima. No borres el .keystore
+        firma {
+            storeFile file('listacompra.keystore')
+            storeType 'pkcs12'
+            storePassword 'listacompra'
+            keyAlias 'listacompra'
+            keyPassword 'listacompra'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.firma
+        }
+        debug {
+            signingConfig signingConfigs.firma
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.13.1'
+}
