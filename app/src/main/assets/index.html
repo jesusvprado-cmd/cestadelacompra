@@ -660,7 +660,7 @@ function htmlRev(){
   ${REV.foto?`<img class="mini" src="data:image/jpeg;base64,${REV.foto}">`:''}
   ${REV.texto?`<div class="dicho">🎤 «${esc(REV.texto)}»</div>`:''}
   ${REV.cargando?`<div class="cargando"><span class="spin"></span>${esc(REV.cargando)}</div>`:''}
-  ${REV.error?`<p class="err">${esc(REV.error)}</p>`:''}
+  ${REV.error?`<p class="err">${esc(REV.error)}</p>${REV.foto?'<div class="botones"><button class="prim" id="rRe">Reintentar con la misma foto</button></div>':''}`:''}
   <div id="rL">${REV.prods.map((p,i)=>`<div class="rfila ${p.ok?'':'no'}" data-i="${i}"><input type="checkbox" class="rk" ${p.ok?'checked':''}><button class="rs" data-sec="${p.seccion}" aria-label="Sección">${(SEC[p.seccion]||SEC.otros).e}</button><input class="rn" value="${esc(p.nombre)}"><input class="rc" value="${esc(p.cantidad)}" placeholder="cant."></div>${p.ya?'<span class="ya-esta">Ya está en la lista (márcalo si quieres cambiar la cantidad)</span>':''}`).join('')}</div>
   ${!REV.cargando&&!REV.prods.length&&!REV.error?'<p class="nota">No se ha encontrado ningún producto.</p>':''}
   ${REV.cargando?'':`<div class="botones"><button id="rMas">＋ Otro a mano</button><button id="rVoz">🎤 Dictar más</button></div>`}
@@ -678,6 +678,8 @@ function montarRev(r){
   r.querySelector('#rNo').onclick=()=>{REV=null;cerrar();};
   const mas=r.querySelector('#rMas');
   if(mas)mas.onclick=()=>{leerRevDOM();REV.prods.push({nombre:'',cantidad:'',seccion:'otros',ok:true});pintarModal();const fs=document.querySelectorAll('.rn');fs[fs.length-1].focus();};
+  const re=r.querySelector('#rRe');
+  if(re)re.onclick=()=>leerFoto(REV.foto);
   const voz=r.querySelector('#rVoz');
   if(voz)voz.onclick=dictar;
   r.querySelector('#rOk').onclick=()=>{
@@ -702,17 +704,20 @@ Reglas:
 ${hab?`- Si un producto es el mismo que alguno de estos que la familia compra a menudo, usa exactamente ese nombre: ${hab}.`:''}
 `;
 }
-async function buscarModelo(){
-  const r=await http('GET','https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',null,{'x-goog-api-key':CFG.gemini});
-  if(r.status!==200){log('Lista de modelos',r.status,r.text.slice(0,200));return null;}
-  let ms=[];try{ms=JSON.parse(r.text).models||[];}catch(e){}
-  const cand=ms.filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent'))
-    .map(m=>String(m.name||'').replace(/^models\//,''))
-    .filter(n=>/flash/.test(n)&&!/image|tts|audio|live|embed|thinking|exp|robotics|computer/.test(n));
-  const nota=n=>{if(n==='gemini-flash-latest')return 999;const v=parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1]||0);return v*10-(/lite/.test(n)?3:0)-(/preview/.test(n)?1:0);};
-  cand.sort((a,b)=>nota(b)-nota(a));
-  log('Modelos flash disponibles:',cand.slice(0,6).join(', '));
-  return cand[0]||null;
+let MODELOS=null;
+async function buscarModelo(excluir){
+  if(!MODELOS){
+    const r=await http('GET','https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',null,{'x-goog-api-key':CFG.gemini});
+    if(r.status!==200){log('Lista de modelos',r.status,r.text.slice(0,200));return null;}
+    let ms=[];try{ms=JSON.parse(r.text).models||[];}catch(e){}
+    const nota=n=>{if(n==='gemini-flash-latest')return 999;if(n==='gemini-flash-lite-latest')return 500;const v=parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/)||[])[1]||0);return v*10-(/lite/.test(n)?3:0)-(/preview/.test(n)?1:0);};
+    MODELOS=ms.filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent'))
+      .map(m=>String(m.name||'').replace(/^models\//,''))
+      .filter(n=>/flash/.test(n)&&!/image|tts|audio|live|embed|thinking|exp|robotics|computer/.test(n))
+      .sort((a,b)=>nota(b)-nota(a));
+    log('Modelos flash disponibles:',MODELOS.slice(0,8).join(', '));
+  }
+  return MODELOS.find(m=>!(excluir&&excluir.has(m)))||null;
 }
 function mensajeGemini(r){
   const t=r.text||'';
@@ -726,8 +731,9 @@ function mensajeGemini(r){
 async function gemini(parts){
   if(!CFG.gemini)throw new Error('Falta la clave de Gemini (⚙ Ajustes).');
   const cuerpo=JSON.stringify({contents:[{role:'user',parts}],generationConfig:{temperature:0.1,responseMimeType:'application/json',responseSchema:ESQUEMA}});
-  let modelo=CFG.modelo||'gemini-flash-latest',cambiado=false;
-  for(let intento=0;intento<4;intento++){
+  let modelo=CFG.modelo||'gemini-flash-latest';
+  const probados=new Set();
+  for(let intento=0;intento<7;intento++){
     const t0=Date.now();
     const r=await http('POST',`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelo)}:generateContent`,cuerpo,{'Content-Type':'application/json','x-goog-api-key':CFG.gemini});
     log('Gemini',modelo,'→',r.status,(Date.now()-t0)+' ms');
@@ -736,17 +742,26 @@ async function gemini(parts){
       try{const j=JSON.parse(r.text);txt=((j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[]).map(p=>p.text||'').join('');}catch(e){}
       txt=txt.replace(/^```(?:json)?\s*|\s*```$/g,'').trim();
       log('Respuesta:',txt.slice(0,500));
-      try{const j=JSON.parse(txt);return (j.productos||[]).filter(p=>p&&p.nombre);}catch(e){throw new Error('Gemini ha contestado algo raro. Vuelve a probar.');}
+      let prods;try{prods=(JSON.parse(txt).productos||[]).filter(p=>p&&p.nombre);}catch(e){throw new Error('Gemini ha contestado algo raro. Vuelve a probar.');}
+      if(modelo!==CFG.modelo){CFG.modelo=modelo;guardarCfg();log('Desde ahora uso el modelo',modelo);}
+      return prods;
     }
     log('Error Gemini:',r.text.slice(0,400));
-    if(!cambiado&&(r.status===404||(r.status===400&&/not found|not supported|unknown name.*model/i.test(r.text)))){
-      cambiado=true;const m=await buscarModelo();
-      if(m&&m!==modelo){modelo=m;CFG.modelo=m;guardarCfg();log('Uso el modelo',m);continue;}
+    const noExiste=r.status===404||(r.status===400&&/not found|not supported|unknown name.*model/i.test(r.text));
+    const saturado=r.status===500||r.status===503||r.status===504||(r.status===429&&!/per day|PerDay/i.test(r.text)&&intento>0)||/overloaded|UNAVAILABLE|high demand/i.test(r.text);
+    const cupoAgotado=r.status===429;
+    if(noExiste||saturado||cupoAgotado){
+      probados.add(modelo);
+      // probar otro modelo: si no existe, enseguida; si está saturado, tras un reintento con el mismo
+      if(noExiste||cupoAgotado||intento>=1){
+        const otro=await buscarModelo(probados);
+        if(otro){log('Cambio al modelo',otro);modelo=otro;await esperar(400);continue;}
+      }
+      if(saturado){await esperar(1200*(intento+1));continue;}
     }
-    if(r.status===500||r.status===503){await esperar(1500*(intento+1));continue;}
     throw new Error(mensajeGemini(r));
   }
-  throw new Error('Gemini no responde ahora mismo. Prueba otra vez en un rato.');
+  throw new Error('Los servidores gratuitos de Gemini están saturados ahora mismo. Pulsa «Reintentar» en un par de minutos.');
 }
 
 /* ---- Foto ---- */
@@ -788,6 +803,7 @@ window.__foto=(b64,err)=>{
 };
 async function leerFoto(b64){
   if(!revAbierta())REV=null;
+  if(REV&&REV.foto===b64)REV.prods=REV.prods.filter(p=>p.ok&&p.nombre);
   abrirRevision({foto:b64,cargando:'Leyendo la lista… (unos segundos)',error:''});
   try{
     const prods=await gemini([{text:promptBase()+'\nLa imagen es una lista de la compra escrita a mano (papel, post-it o pizarra). Ignora lo que esté tachado, fechas, precios y dibujos. Si no ves ninguna lista, devuelve "productos" vacío.'},{inline_data:{mime_type:'image/jpeg',data:b64}}]);
